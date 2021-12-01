@@ -12,7 +12,6 @@
 library("DESeq2")
 library("RColorBrewer")
 library("pheatmap")
-library(gdata)
 library(ggplot2)
 library(dplyr)
 library('biomaRt')
@@ -191,4 +190,13 @@ Table.S3 <- res.dummy[, c("SYMBOL", "log2FoldChange", "padj")]
 
 # Saving file for future analysis
 #write.table(resf, "../data/Result_RNASeq_DESeq2_melanoma_cutaneous.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+
+
+# Results -----------------------------------------------------------------
+
+write.table(Table.S3, "../results/Tables/Table-S3.2.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+ggsave("../results/Figures/Figure-1C.pdf", Figure.1C, width = 7, height = 6, device = "pdf")
+pdf("../results/Figures/Figure-1D.pdf", width = 18, height = 18)
+Figure.1D
+dev.off()
 

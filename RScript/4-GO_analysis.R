@@ -55,4 +55,7 @@ go_down <- rbind(result_go$BP$down@result, result_go$CC$down@result, result_go$M
 
 Table.S4 <- go_up[, c("Description", "Count", "p.adjust", "GO_type")]
 
+# Results -----------------------------------------------------------------
+
+write.table(Table.S4, "../results/Tables/Table-S4.txt", col.names = T, row.names = F, sep = "\t", quote = F)
 

@@ -202,7 +202,7 @@ sade$Cell_Type[WhichCells(b.cells, idents = c("Naive B cells"))] <- "Naive B cel
 sade$Cell_Type[WhichCells(b.cells, idents = c("Naive B cells IGK-high"))] <- "Naive B cells IGK-high"
 sade$Cell_Type[WhichCells(b.cells, idents = c("Naive B cells IGL-high"))] <- "Naive B cells IGL-high"
 
-saveRDS(sade, "../data/sade.RDS")
+#saveRDS(sade, "../data/sade.RDS")
 sade <- readRDS("../data/sade.RDS")
 
 sade$response <- sade$characteristics..response
@@ -294,7 +294,7 @@ rownames(genes_IMK) <- genes_IMK$SYMBOL
 genes_IMK$SYMBOL[!genes_IMK$SYMBOL%in%rownames(sade)]
 
 intersect(rownames(mks.pd1[mks.pd1$p_val_adj<0.05,]), genes_IMK$SYMBOL)
-mks.pd1[intersect(rownames(mks.pd1[mks.pd1$p_val_adj<0.05,]), genes_IMK$SYMBOL), ]
+TableS8 <- mks.pd1[intersect(rownames(mks.pd1[mks.pd1$p_val_adj<0.05,]), genes_IMK$SYMBOL), ]
 
 sade.pd1 <- subset(sade, characteristics..therapy%in%c("anti-PD1"))
 
@@ -377,4 +377,17 @@ p2 <- ggviolin(cxcr5.sc, x = "Response", y = "Single.cell", title = "Single-cell
 Figure.3F <-ggpubr::ggarrange(plotlist=list(p, p2, p4), common.legend=T, legend = "none", nrow = 1)
 
 
+# Results -----------------------------------------------------------------
 
+write.table(TableS7, "../results/Tables/Table-S7.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(TableS8, "../results/Tables/Table-S8.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+
+ggsave("../results/Figures/Figure-3A1.pdf", Figure.3A1, width = 8, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-3A1bcell.pdf", Figure.3A1bcell, width = 8, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-3A2.pdf", Figure.3A2, width = 8, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-3B.pdf", Figure.3B, width = 8, height = 5, device = "pdf")
+ggsave("../results/Figures/Figure-3E.pdf", Figure.3E, width = 15, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-3F.pdf", Figure.3F, width = 15, height = 7, device = "pdf")
+pdf("../results/Figures/Figure-S3.pdf", width = 20, height = 20)
+Figure.S3
+dev.off()

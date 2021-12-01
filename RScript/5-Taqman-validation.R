@@ -83,3 +83,8 @@ Figure.S1 <- ggplot(data=taqman[taqman$Gene!="CDR1", ], aes(x=tpm, y=deltaCt,))+
 
 Table.S5 <- data.frame(Gene=names(res$corr), Pearson.correlation=unlist(res$corr), P.value = unlist(res$corr.pvalue))
 
+# Results -----------------------------------------------------------------
+
+write.table(Table.S5, "../results/Tables/Table-S5.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+ggsave("../results/Figures/Figure-S1.pdf", Figure.S1, width = 7, height = 6, device = "pdf")
+

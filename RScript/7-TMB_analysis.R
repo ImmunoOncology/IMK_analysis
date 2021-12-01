@@ -19,7 +19,7 @@ library(RColorBrewer)
 clinical <- read.delim("../data/clinical.txt")
 rownames(clinical) <- paste(clinical$Response, "-", rownames(clinical), sep = "")
 
-tmb <- read.delim("../data/TMB.txt")
+tmb <- read.delim("../data/TMB.txt", dec = ",")
 tmb$ID <- paste(tmb$Type, "-IMK", gsub("Sample ", "", tmb$Sample), sep = "")
 
 tmb <- tmb[tmb$ID%in%rownames(clinical)[clinical$Diagnosis%in%"cutaneous"], ]
@@ -97,3 +97,10 @@ Figure.S2B <- ggplot(DBS.res.norm, aes(x=ID, y=value, fill=DBS)) + geom_bar(stat
     , legend.text=element_text(size=16)
     , legend.title=element_text(size=16, face = "bold")
   )
+
+
+# Results -----------------------------------------------------------------
+
+ggsave("../results/Figures/Figure-S2A.pdf", Figure.S2A, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-S2B.pdf", Figure.S2B, width = 12, height = 6, device = "pdf")
+

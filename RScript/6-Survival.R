@@ -69,4 +69,190 @@ Table.S6 <- data.frame(
   HR.PFS = res_HR_PFS$coef
 )
 
+my.col  = c("Low"="firebrick2", "Med"="mediumseagreen", "High"="skyblue")
+
+df_surv[, "B4GALNT2"] <- factor(df_surv[, "B4GALNT2"], labels = c("Low", "Med", "High"))
+Figure.2.1 <- p <- ggsurvplot(
+  survfit(Surv(PFS, PFS_event) ~ B4GALNT2, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "B4GALNT2"])[levels(df_surv[, "B4GALNT2"])%in%unique(df_surv[, "B4GALNT2"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="Time in days",
+  ylab="Progression-free survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "B4GALNT2"])[levels(df_surv[, "B4GALNT2"])%in%unique(df_surv[, "B4GALNT2"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "B4GALNT2")
+
+df_surv[, "KCNA1"] <- factor(df_surv[, "KCNA1"], labels = c("Low", "Med", "High"))
+Figure.2.2 <- p <- ggsurvplot(
+  survfit(Surv(PFS, PFS_event) ~ KCNA1, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "KCNA1"])[levels(df_surv[, "KCNA1"])%in%unique(df_surv[, "KCNA1"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="Time in days",
+  ylab="Progression-free survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "KCNA1"])[levels(df_surv[, "KCNA1"])%in%unique(df_surv[, "KCNA1"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "KCNA1")
+
+df_surv[, "LGR5"] <- factor(df_surv[, "LGR5"], labels = c("Low", "Med", "High"))
+Figure.2.3 <- p <- ggsurvplot(
+  survfit(Surv(PFS, PFS_event) ~ LGR5, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "LGR5"])[levels(df_surv[, "LGR5"])%in%unique(df_surv[, "LGR5"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="Time in days",
+  ylab="Progression-free survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "LGR5"])[levels(df_surv[, "LGR5"])%in%unique(df_surv[, "LGR5"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "LGR5")
+
+df_surv[, "IGLV3.21"] <- factor(df_surv[, "IGLV3.21"], labels = c("Low", "Med", "High"))
+Figure.2.4 <- p <- ggsurvplot(
+  survfit(Surv(PFS, PFS_event) ~ IGLV3.21, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "IGLV3.21"])[levels(df_surv[, "IGLV3.21"])%in%unique(df_surv[, "IGLV3.21"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="Time in days",
+  ylab="Progression-free survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "IGLV3.21"])[levels(df_surv[, "IGLV3.21"])%in%unique(df_surv[, "IGLV3.21"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "IGLV3-21")
+
+df_surv[, "IGLV6.57"] <- factor(df_surv[, "IGLV6.57"], labels = c("Low", "Med", "High"))
+Figure.2.5 <- p <- ggsurvplot(
+  survfit(Surv(OS, OS_event) ~ IGLV6.57, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "IGLV6.57"])[levels(df_surv[, "IGLV6.57"])%in%unique(df_surv[, "IGLV6.57"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="OS_event in days",
+  ylab="Overall survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "IGLV6.57"])[levels(df_surv[, "IGLV6.57"])%in%unique(df_surv[, "IGLV6.57"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "IGLV6-57")
+
+
+df_surv[, "IGKV4.1"] <- factor(df_surv[, "IGKV4.1"], labels = c("Low", "Med", "High"))
+Figure.2.6 <- p <- ggsurvplot(
+  survfit(Surv(OS, OS_event) ~ IGKV4.1, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "IGKV4.1"])[levels(df_surv[, "IGKV4.1"])%in%unique(df_surv[, "IGKV4.1"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="OS_event in days",
+  ylab="Overall survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "IGKV4.1"])[levels(df_surv[, "IGKV4.1"])%in%unique(df_surv[, "IGKV4.1"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "IGKV4-1")
+
+
+df_surv[, "IGHA1"] <- factor(df_surv[, "IGHA1"], labels = c("Low", "Med", "High"))
+Figure.2.7 <- p <- ggsurvplot(
+  survfit(Surv(OS, OS_event) ~ IGHA1, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "IGHA1"])[levels(df_surv[, "IGHA1"])%in%unique(df_surv[, "IGHA1"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="OS_event in days",
+  ylab="Overall survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "IGHA1"])[levels(df_surv[, "IGHA1"])%in%unique(df_surv[, "IGHA1"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "IGHA1")
+
+
+df_surv[, "FUT9"] <- factor(df_surv[, "FUT9"], labels = c("Low", "Med", "High"))
+Figure.2.8 <- p <- ggsurvplot(
+  survfit(Surv(OS, OS_event) ~ FUT9, data = df_surv),                 
+  conf.int = F,         
+  size=1,#0.7,                    
+  pval=TRUE, 
+  palette = my.col[levels(df_surv[, "FUT9"])[levels(df_surv[, "FUT9"])%in%unique(df_surv[, "FUT9"])]],
+  pval.method=TRUE,   break.x.by = 500,    
+  xlab="OS_event in days",
+  ylab="Overall survival probability",
+  ylim=c(0,1),
+  surv.scale="percent",
+  legend.labs = levels(df_surv[, "FUT9"])[levels(df_surv[, "FUT9"])%in%unique(df_surv[, "FUT9"])],
+  tables.col="strata",
+  risk.table=F, 
+  risk.table.col = "strata",
+  risk.table.y.text = T,
+  legend = c(.7,.8),
+  tables.y.text = T, 
+  legend.title="", ggtheme = custom_theme(), title = "FUT9")
+
+
+# Results -----------------------------------------------------------------
+
+write.table(Table.S6, "../results/Tables/Table-S6.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+ggsave("../results/Figures/Figure-2.1.pdf", plot = print(Figure.2.1), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.2.pdf", plot = print(Figure.2.2), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.3.pdf", plot = print(Figure.2.3), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.4.pdf", plot = print(Figure.2.4), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.5.pdf", plot = print(Figure.2.5), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.6.pdf", plot = print(Figure.2.6), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.7.pdf", plot = print(Figure.2.7), width = 6.5, height = 7, onefile=F)
+ggsave("../results/Figures/Figure-2.8.pdf", plot = print(Figure.2.8), width = 6.5, height = 7, onefile=F)
+
 

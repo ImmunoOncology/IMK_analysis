@@ -12,7 +12,6 @@
 library("DESeq2")
 library("RColorBrewer")
 library("pheatmap")
-library(gdata)
 library(ggplot2)
 library(dplyr)
 library('biomaRt')
@@ -179,3 +178,13 @@ Figure.1B <- Heatmap(z.mat, name = "Color Key",
 
 
 Table.S3 <- res.dummy[, c("SYMBOL", "log2FoldChange", "padj")]
+
+
+# Results -----------------------------------------------------------------
+
+write.table(Table.S3, "../results/Tables/Table-S3.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+ggsave("../results/Figures/Figure-1A.pdf", Figure.1A, width = 7, height = 6, device = "pdf")
+pdf("../results/Figures/Figure-1B.pdf", width = 18, height = 12)
+Figure.1B
+dev.off()
+ 

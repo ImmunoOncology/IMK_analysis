@@ -12,7 +12,6 @@
 
 
 
-library(gdata)
 library(ggplot2)
 library(reshape2)
 library(ggpubr)
@@ -251,7 +250,7 @@ dummy.good <- dummy[dummy$Response=="Good", ]
 dummy.bad <- dummy[dummy$Response=="Bad", ]
 
 top.good <- dummy.good[order(dummy.good$x, decreasing = T), "ID_clone_gene"][1:5]
-dummy[dummy$ID_clone_gene%in%top.good, ]
+Table1 <- dummy[dummy$ID_clone_gene%in%top.good, ]
 
 
 # Circle Plot 
@@ -293,22 +292,9 @@ grid.col[idt] <- my.col[idt,"col"]
 grid.col[-grep("IMK", names(grid.col))] <- "lightseagreen"
 
 par(cex = 1, mar = c(0, 0, 0, 0))
+
+pdf("../results/Figures/Figure-S5.1.pdf", width = 8, height = 8)
 chordDiagram(dummy, annotationTrack = "grid", preAllocateTracks = list(track.height = 0.1), grid.col = grid.col)
-
-
-circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
-  xlim = get.cell.meta.data("xlim")
-  xplot = get.cell.meta.data("xplot")
-  ylim = get.cell.meta.data("ylim")
-  sector.name = get.cell.meta.data("sector.index")
-  if(abs(xplot[2] - xplot[1]) > 10) {
-    circos.genomicText(data.frame(mean(xlim), mean(ylim)), value="hola", labels=("adios"), sector.name, facing = "inside",
-                       niceFacing = TRUE, adj = c(0.5, 0))
-    circos.axis("bottom", labels.cex = 0.4)
-  }
-}, bg.border = NA)
-
-
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
   xplot = get.cell.meta.data("xplot")
@@ -322,7 +308,7 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   }
   
 }, bg.border = NA)
-
+dev.off()
 
 
 # bestDFamily 
@@ -339,6 +325,7 @@ idt <- names(grid.col)[names(grid.col)%in%rownames(my.col)]
 grid.col[idt] <- my.col[idt,"col"]
 grid.col[-grep("IMK", names(grid.col))] <- "lightsalmon"
 
+pdf("../results/Figures/Figure-S5.2.pdf", width = 8, height = 8)
 chordDiagram(dummy, annotationTrack = "grid", preAllocateTracks = list(track.height = 0.1), grid.col = grid.col)
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -354,6 +341,7 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   }
   
 }, bg.border = NA)
+dev.off()
 
 # bestJFamily 
 
@@ -369,6 +357,7 @@ idt <- names(grid.col)[names(grid.col)%in%rownames(my.col)]
 grid.col[idt] <- my.col[idt,"col"]
 grid.col[-grep("IMK", names(grid.col))] <- "lightcoral"
 
+pdf("../results/Figures/Figure-S5.3.pdf", width = 8, height = 8)
 chordDiagram(dummy, annotationTrack = "grid", preAllocateTracks = list(track.height = 0.1), grid.col = grid.col)
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -384,6 +373,7 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   }
   
 }, bg.border = NA)
+dev.off()
 
 # bestCFamily 
 dummy <- aggregate(df_mixcr$cloneCount, by=list(Sample=df_mixcr$Sample, bestCFamily=df_mixcr$bestCFamily), FUN=sum)
@@ -398,6 +388,7 @@ idt <- names(grid.col)[names(grid.col)%in%rownames(my.col)]
 grid.col[idt] <- my.col[idt,"col"]
 grid.col[-grep("IMK", names(grid.col))] <- "yellowgreen"
 
+pdf("../results/Figures/Figure-S5.4.pdf", width = 8, height = 8)
 chordDiagram(dummy, annotationTrack = "grid", preAllocateTracks = list(track.height = 0.1), grid.col = grid.col)
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -410,7 +401,7 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
 
   
 }, bg.border = NA)
-
+dev.off()
 
 # HLA ---------------------------------------------------------------------
 
@@ -427,7 +418,7 @@ df.classI <- do.call('rbind', lapply(classI, function(file){
   df[, 2] <- gsub(" ", "", df[, 2])
   df[, 2] <- gsub("RPKM", "", df[, 2])
   colnames(df) <- c("Allele", "RPKM")
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Class I", nrow(df))
   return(df)
 }))
@@ -438,7 +429,7 @@ df.nonclass <- do.call('rbind', lapply(nonclass, function(file){
   df[, 2] <- gsub(" ", "", df[, 2])
   df[, 2] <- gsub("RPKM", "", df[, 2])
   colnames(df) <- c("Allele", "RPKM")
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Non-Class I", nrow(df))
   return(df)
 }))
@@ -449,7 +440,7 @@ df.classII <- do.call('rbind', lapply(classII, function(file){
   df[, 2] <- gsub(" ", "", df[, 2])
   df[, 2] <- gsub("RPKM", "", df[, 2])
   colnames(df) <- c("Allele", "RPKM")
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Class II", nrow(df))
   return(df)
 }))
@@ -469,7 +460,7 @@ classII <- list.files(path = "../data/seq2HLA_output/", pattern = "ClassII.HLAge
 df.classI <- do.call('rbind', lapply(classI, function(file){
   df <- read.table(file, sep = "\t", dec = ".", header = T, quote="\"")
   colnames(df) <- c('Locus',	'Allele-1',	'Confidence-1',	'Allele-2', 'Confidence-2')
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Class I", nrow(df))
   return(df)
 }))
@@ -477,7 +468,7 @@ df.classI <- do.call('rbind', lapply(classI, function(file){
 df.nonclass <- do.call('rbind', lapply(nonclass, function(file){
   df <- read.table(file, sep = "\t", dec = ".", header = T, quote="\"")
   colnames(df) <- c('Locus',	'Allele-1',	'Confidence-1',	'Allele-2', 'Confidence-2')
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Non-Class I", nrow(df))
   return(df)
 }))
@@ -485,7 +476,7 @@ df.nonclass <- do.call('rbind', lapply(nonclass, function(file){
 df.classII <- do.call('rbind', lapply(classII, function(file){
   df <- read.table(file, sep = "\t", dec = ".", header = T, quote="\"")
   colnames(df) <- c('Locus',	'Allele-1',	'Confidence-1',	'Allele-2', 'Confidence-2')
-  df$Sample <- strsplit(file, "/")[[1]][[4]]
+  df$Sample <- strsplit(file, "/")[[1]][[5]]
   df$Class <- rep("Class II", nrow(df))
   return(df)
 }))
@@ -590,7 +581,7 @@ idt <- names(grid.col)[names(grid.col)%in%rownames(my.col)]
 grid.col[idt] <- my.col[idt,"col"]
 grid.col[-grep("IMK", names(grid.col))] <- "maroon"
 
-
+pdf("../results/Figures/Figure-S5.5.pdf", width = 8, height = 8)
 chordDiagram(dummy, annotationTrack = "grid", preAllocateTracks = list(track.height = 0.1), grid.col = grid.col)
 circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   xlim = get.cell.meta.data("xlim")
@@ -606,17 +597,18 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
   }
   
 }, bg.border = NA)
-
+dev.off()
 
 # Merging HLA, BCR, TCR ----------------------------------------------------------------
 
 
 hla <- c(brewer.pal(n = 12, name = "Set3"), brewer.pal(n = 2, name = "Set2"))
 
-df.rpkm$ID <- df.rpkm$Sample
+df.rpkm$ID <- paste0(df.rpkm$Response, "-", df.rpkm$Sample)
 
 net_mixcr <- df_mixcr
-net_mixcr$ID <- paste(net_mixcr$Response, net_mixcr$Sample, sep = "-")
+net_mixcr$ID <- net_mixcr$Sample
+net_mixcr$Sample <- gsub("Good-", "", gsub("Bad-", "", net_mixcr$Sample))
 
 col <- c(brewer.pal(n = 12, name = "Set3"), brewer.pal(n = 8, name = "Set2"), brewer.pal(n = 8, name = "Set1"))
 
@@ -661,5 +653,20 @@ p6 <- ggplot(data=net_mixcr[net_mixcr$Sample%in%c("IMK35", "IMK37", "IMK39") & n
 
 
 Figure.5D1 <- grid.arrange(p2, p3, p4, nrow = 3)
-Figure.5D1 <- grid.arrange(p1, p5, p6, nrow = 3)
+Figure.5D2 <- grid.arrange(p1, p5, p6, nrow = 3)
+
+
+
+# Results -----------------------------------------------------------------
+
+write.table(Table1, "../results/Tables/Table-3.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+
+ggsave("../results/Figures/Figure-S6A.pdf", Figure.S6A, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-S6B.pdf", Figure.S6B, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-5B.pdf", Figure.5B, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-5A.pdf", Figure.5A, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-5C.pdf", Figure.5C, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-5D1.pdf", Figure.5D1, width = 12, height = 8, device = "pdf")
+ggsave("../results/Figures/Figure-5D2.pdf", Figure.5D2, width = 12, height = 8, device = "pdf")
+
 

@@ -291,3 +291,17 @@ Table.S9 <- data.frame(
 )
 
 
+# Results -----------------------------------------------------------------
+
+
+
+write.table(Table.S7.2, "../results/Tables/Table-S7.2.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S7.3, "../results/Tables/Table-S7.3.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S9, "../results/Tables/Table-S9.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+
+ggsave("../results/Figures/Figure-3C.pdf", Figure.3C, width = 8, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-3D.pdf", Figure.3D, width = 8, height = 7, device = "pdf")
+ggsave("../results/Figures/Figure-4C.pdf", Figure.4C, width = 8, height = 7, device = "pdf")
+
+
+

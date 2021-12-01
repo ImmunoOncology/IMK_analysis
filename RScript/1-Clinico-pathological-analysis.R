@@ -57,3 +57,15 @@ Table.S2 <- data.frame(
 
 Table.S12 <- melanoma_descriptive
   
+
+
+# Results -----------------------------------------------------------------
+
+
+if(!dir.exists("../results")) dir.create("../results")
+if(!dir.exists("../results/Tables")) dir.create("../results/Tables")
+if(!dir.exists("../results/Figures")) dir.create("../results/Figures")
+
+write.table(Table.S1, "../results/Tables/Table-S1.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S2, "../results/Tables/Table-S2.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S12, "../results/Tables/Table-S12.txt", col.names = T, row.names = F, sep = "\t", quote = F)
