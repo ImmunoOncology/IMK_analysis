@@ -295,6 +295,7 @@ genes_IMK$SYMBOL[!genes_IMK$SYMBOL%in%rownames(sade)]
 
 intersect(rownames(mks.pd1[mks.pd1$p_val_adj<0.05,]), genes_IMK$SYMBOL)
 TableS8 <- mks.pd1[intersect(rownames(mks.pd1[mks.pd1$p_val_adj<0.05,]), genes_IMK$SYMBOL), ]
+TableS8$Gene <- rownames(TableS8)
 
 sade.pd1 <- subset(sade, characteristics..therapy%in%c("anti-PD1"))
 
@@ -379,7 +380,7 @@ Figure.3F <-ggpubr::ggarrange(plotlist=list(p, p2, p4), common.legend=T, legend 
 
 # Results -----------------------------------------------------------------
 
-write.table(TableS7, "../results/Tables/Table-S7.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(TableS7, "../results/Tables/Table-S7.1.txt", col.names = T, row.names = F, sep = "\t", quote = F)
 write.table(TableS8, "../results/Tables/Table-S8.txt", col.names = T, row.names = F, sep = "\t", quote = F)
 
 ggsave("../results/Figures/Figure-3A1.pdf", Figure.3A1, width = 8, height = 7, device = "pdf")

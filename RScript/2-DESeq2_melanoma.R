@@ -182,7 +182,7 @@ Table.S3 <- res.dummy[, c("SYMBOL", "log2FoldChange", "padj")]
 
 # Results -----------------------------------------------------------------
 
-write.table(Table.S3, "../results/Tables/Table-S3.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S3, "../results/Tables/Table-S3.1.txt", col.names = T, row.names = F, sep = "\t", quote = F)
 ggsave("../results/Figures/Figure-1A.pdf", Figure.1A, width = 7, height = 6, device = "pdf")
 pdf("../results/Figures/Figure-1B.pdf", width = 18, height = 12)
 Figure.1B

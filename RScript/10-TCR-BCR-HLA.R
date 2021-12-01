@@ -252,6 +252,10 @@ dummy.bad <- dummy[dummy$Response=="Bad", ]
 top.good <- dummy.good[order(dummy.good$x, decreasing = T), "ID_clone_gene"][1:5]
 Table1 <- dummy[dummy$ID_clone_gene%in%top.good, ]
 
+dummy.good <- dummy.good$ID_clone_gene[order(dummy.good$x, decreasing = T)][1:100]
+idt <- df_mixcr$ID_clone_gene%in%dummy.good
+Table.S10 <- aggregate(df_mixcr$cloneCount[idt], by=list(Sample=df_mixcr$Sample[idt]), FUN=sum)
+colnames(Table.S10)[2] <- "Clone counts"
 
 # Circle Plot 
 
@@ -659,7 +663,8 @@ Figure.5D2 <- grid.arrange(p1, p5, p6, nrow = 3)
 
 # Results -----------------------------------------------------------------
 
-write.table(Table1, "../results/Tables/Table-3.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table1, "../results/Tables/Table-1.txt", col.names = T, row.names = F, sep = "\t", quote = F)
+write.table(Table.S10, "../results/Tables/Table-S10.txt", col.names = T, row.names = F, sep = "\t", quote = F)
 
 ggsave("../results/Figures/Figure-S6A.pdf", Figure.S6A, width = 12, height = 8, device = "pdf")
 ggsave("../results/Figures/Figure-S6B.pdf", Figure.S6B, width = 12, height = 8, device = "pdf")

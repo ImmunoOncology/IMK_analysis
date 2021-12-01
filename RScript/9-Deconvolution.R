@@ -132,8 +132,8 @@ for(i in unique(cibersort[, 2])){
   }
 }
 
-Table.S7.2 <- data.frame(Celltype=names(p.res_mcpcounter), Wilcoxon.test = unlist(names(p.res_mcpcounter))) 
-Table.S7.3 <- data.frame(Celltype=names(p.res_cibersort), Wilcoxon.test = unlist(names(p.res_cibersort))) 
+Table.S7.2 <- data.frame(Celltype=names(p.res_mcpcounter), Wilcoxon.test = unlist((p.res_mcpcounter))) 
+Table.S7.3 <- data.frame(Celltype=names(p.res_cibersort), Wilcoxon.test = unlist((p.res_cibersort))) 
 
 # Comparasion MCP-counter - CIBERSORTx -------------------------------------------------------------
 
