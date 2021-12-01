@@ -12,6 +12,6 @@ Code for the manuscript "A gene signature of high IGKC expressing intratumoral P
   8. sc-RNAseq-analysis.R: Single cell RNA-seq analysis of Sade-Feldman M et al. data. 
   9. Deconvolution.R: in silico cytometry method to obtained quantification of cell types in our RNA-seq.
   10. TCR-BCR-HLA.R: TCR, BCR and HLA profiling of the cutaneous melanoma cohort. 
-  11. 11-Machine-Learning.R: Machine Learning analysis to establish the predictive power of our gene signature.
+  11. Machine-Learning.R: Machine Learning analysis to establish the predictive power of our gene signature.
 
 
