@@ -10,6 +10,8 @@
 ##
 ###################################################
 
+library(survival)
+library(survminer)
 
 source("help_fn.R")
 
@@ -36,6 +38,22 @@ cutaneous_survival_OS <- do_survival(clinica_cutaneous, vars, time = "OS", event
 cutaneous_survival_PFS <- do_survival(clinica_cutaneous, vars, time = "PFS", event = "PFS_event")
 
 
+Table.S1 <- data.frame(
+  Variable = melanoma_test$Variable, 
+  LRT.melanoma = melanoma_test$p.value, 
+  LRT.cutaneous = cutaneous_test$p.value, 
+  Logrank.OS.melanoma = melanoma_survival_OS$Logrank[match(melanoma_test$Variable, names(melanoma_survival_OS$variable))], 
+  Logrank.OS.cutaneous = cutaneous_survival_OS$Logrank[match(melanoma_test$Variable, names(cutaneous_survival_OS$variable))], 
+  Logrank.PFS.melanoma = melanoma_survival_PFS$Logrank[match(melanoma_test$Variable, names(melanoma_survival_PFS$variable))], 
+  Logrank.PFS.cutaneous = cutaneous_survival_PFS$Logrank[match(melanoma_test$Variable, names(cutaneous_survival_PFS$variable))]
+)
 
+Table.S2 <- data.frame(
+  HR.OS.melanoma = melanoma_survival_OS[, -ncol(melanoma_survival_OS)], 
+  HR.OS.cutaneous = cutaneous_survival_OS[, -ncol(cutaneous_survival_OS)], 
+  HR.PFS.melanoma = melanoma_survival_PFS[, -ncol(melanoma_survival_PFS)], 
+  HR.PFS.cutaneous = cutaneous_survival_PFS[, -ncol(cutaneous_survival_PFS)]
+)
 
-
+Table.S12 <- melanoma_descriptive
+  

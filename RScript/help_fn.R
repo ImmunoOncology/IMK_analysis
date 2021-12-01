@@ -225,7 +225,9 @@ do_survival <- function(datos, vars, time, event){
   uni_survival$coef[idt] <- paste0(uni_survival$estimate[idt], " ", "(", uni_survival$conf.low[idt], " - ", uni_survival$conf.high[idt], ")")
   uni_survival <- uni_survival[, c("variable", "level", "n", "coef", "p.value")]
   uni_survival$p.value <- round(uni_survival$p.value, 4)
-  
+  uni_logrank <- lapply(univ_formulas, function(x){surv_pvalue(surv_fit(x, data = datos))$pval})
+  uni_survival$Logrank <- NA
+  uni_survival$Logrank[match(names(uni_logrank), names(uni_survival$variable))] <- unlist(uni_logrank)
   return(uni_survival)
 }
 

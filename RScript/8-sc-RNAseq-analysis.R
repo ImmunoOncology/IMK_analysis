@@ -20,6 +20,8 @@ set.seed(123)
 suppressPackageStartupMessages(library(Seurat))
 library(ggplot2)
 library(dplyr)
+library(ggpubr)
+library(RColorBrewer)
 
 org.options <- options
 
@@ -210,7 +212,7 @@ info <- sade@meta.data
 
 sade$Response <- ifelse(sade$response=="Responder", "Good", "Bad")
 my.col <- c('Good'="#EFC000FF", 'Bad'="#0073C2FF")
-DimPlot(sade, group.by = "Response", cols = my.col)+my_theme_bw
+Figure.3A2 <- DimPlot(sade, group.by = "Response", cols = my.col)+my_theme_bw
 
 response <- info[info$response=="Responder", c("patient", "Cell_Type")]
 response <- reshape2::melt(table(response$patient, response$Cell_Type))
@@ -221,7 +223,6 @@ non.response$response <- "Non-responder"
 response <- rbind(response, non.response)
 
 
-library(ggpubr)
 my.list <- list()
 p.res <- list()
 my_comparisons <- list( c("Bad", "Good") )
@@ -234,17 +235,17 @@ for(i in unique(sade$Cell_Type)){
   my.list[[i]] <- p
 }
 
-ggpubr::ggarrange(plotlist=my.list, common.legend=T)
+TableS7 <- data.frame(Stromal.cell.type.scRNAseq = names(p.res), Wilcox.test = unlist(p.res))
 
-library(RColorBrewer)
+Figure.3B <- ggpubr::ggarrange(plotlist=my.list[c("Naive B cells", "Naive B cells IGL-high", "Naive B cells IGK-high")], common.legend=T, nrow = 1)
+
 
 length(unique(sade$CellType))
 col <- c(brewer.pal(n = 9, name = "Set1"), brewer.pal(n = 4, name = "Set2"))
 names(col) <- unique(sade$CellType)
 col["Plasma cells"] <- "antiquewhite2"
 col["Macrophages"] <- "deepskyblue"
-DimPlot(sade, reduction = "umap", group.by = "CellType", cols = col)+my_theme_bw
-
+Figure.3A1 <- DimPlot(sade, reduction = "umap", group.by = "CellType", cols = col)+my_theme_bw
 
 
 
@@ -256,7 +257,7 @@ col[2] <- "lightsteelblue1"
 col[3] <- "antiquewhite2"
 col[4] <- "salmon1"
 col[5] <- "darkolivegreen1"
-DimPlot(bcell, reduction = "umap", group.by = "Cell_Type", cols = col, size = 10)+my_theme_bw+xlab("")+ylab("")+ggtitle("")+theme(
+Figure.3A1bcell <- DimPlot(bcell, reduction = "umap", group.by = "Cell_Type", cols = col, size = 10)+my_theme_bw+xlab("")+ylab("")+ggtitle("")+theme(
   axis.ticks.x=element_blank()
   , axis.text.x=element_blank()
   , axis.text.y=element_blank()
@@ -267,9 +268,6 @@ DimPlot(bcell, reduction = "umap", group.by = "Cell_Type", cols = col, size = 10
 
 markers <- FindAllMarkers(sade)
 markers.top <- unique(as.data.frame(markers %>% filter(p_val_adj<0.05, avg_log2FC>0) %>% dplyr::group_by(cluster) %>% top_n(10, avg_log2FC) %>% select(gene))[, "gene"])
-pdf("heatmap_top_10_fc_bcells.pdf", height = 20, width = 20)
-DoHeatmap(b.cells, features = markers.top)
-dev.off()
 
 my_theme <-   theme(
   axis.title.x=element_text(size=20)
@@ -282,12 +280,7 @@ my_theme <-   theme(
   , legend.title=element_text(size=16, face = "bold")
 )
 
-
-
-pdf("heatmap_sade_top.pdf", height = 20, width = 25)
-DoHeatmap(sade, features = markers.top)+my_theme
-dev.off()
-
+Figure.S3 <- DoHeatmap(sade, features = markers.top)+my_theme
 
 # Mapping IMK -------------------------------------------------------------
 
@@ -333,6 +326,9 @@ p3 <- VlnPlot(sade.pd1, features = c("POU2AF1"), group.by = "Cell_Type", pt.size
 )+xlab("")+ylab("")
 
 
+Figure.3E <- ggpubr::ggarrange(plotlist=list(p1, p2, p3), nrow = 1)
+
+
 p4 <- VlnPlot(sade.pd1, features = c("CXCR5"), group.by = "Cell_Type", pt.size = 1, ncol = 1)+theme(
   axis.title.x=element_text(size=20)
   , axis.title.y=element_text(size=20)
@@ -344,7 +340,6 @@ p4 <- VlnPlot(sade.pd1, features = c("CXCR5"), group.by = "Cell_Type", pt.size =
 )+xlab("")+ylab("")+ggtitle("Single-cell", subtitle = "CXCR5")
 
 
-library(ggpubr)
 cut <- read.delim("../data/Result_RNASeq_DESeq2_melanoma_cutaneous_all.txt")
 cxcr5 <- reshape::melt(cut[cut$GeneSymbol=="CXCR5", -1])
 cxcr5[, "Bulk"] <- cxcr5$value
@@ -379,7 +374,7 @@ p2 <- ggviolin(cxcr5.sc, x = "Response", y = "Single.cell", title = "Single-cell
                  , legend.title=element_text(size=16, face = "bold")
                )+ylab("")+xlab("")
 
-ggpubr::ggarrange(plotlist=list(p, p2, p4), common.legend=T, legend = "none", nrow = 1)
+Figure.3F <-ggpubr::ggarrange(plotlist=list(p, p2, p4), common.legend=T, legend = "none", nrow = 1)
 
 
 

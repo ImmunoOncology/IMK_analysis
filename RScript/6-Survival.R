@@ -11,6 +11,7 @@
 
 library(survival)
 library(survminer)
+library(ggplot2)
 
 source("help_fn.R")
 
@@ -53,16 +54,19 @@ colnames(df_surv) <- gsub("[-]", ".", colnames(df_surv))
 gene_OS <- gsub("[-]", ".", gene_OS)
 gene_PFS <- gsub("[-]", ".", gene_PFS)
 
+genes <- unique(c(gene_OS, gene_PFS))
+
 # Do HR for significant gene in logrank test
-res_HR_OS <- do_survival(datos = df_surv, vars = gene_OS, time = "OS", event = "OS_event")
-res_HR_PFS <- do_survival(datos = df_surv, vars = gene_PFS, time = "PFS", event = "PFS_event")
+res_HR_OS <- do_survival(datos = df_surv, vars = genes, time = "OS", event = "OS_event")
+res_HR_PFS <- do_survival(datos = df_surv, vars = genes, time = "PFS", event = "PFS_event")
 
-gene_OS <- gsub("[.]", " ", gene_OS)
-gene_PFS <- gsub("[.]", " ", gene_PFS)
+Table.S6 <- data.frame(
+  Gene = res_HR_OS$variable, 
+  Level.OS = res_HR_OS$level, 
+  Logrank.OS = res_HR_OS$Logrank, 
+  HR.OS = res_HR_OS$coef, 
+  Logrank.PFS = res_HR_PFS$Logrank, 
+  HR.PFS = res_HR_PFS$coef
+)
 
-res_HR_OS$Logrank <- NA
-res_HR_OS$Logrank[match(gene_OS, res_HR_OS$variable)] <- unlist(res_OS[unlist(res_OS)<0.05])
-
-res_HR_PFS$Logrank <- NA
-res_HR_PFS$Logrank[match(gene_PFS, res_HR_PFS$variable)] <- unlist(res_PFS[unlist(res_PFS)<0.05])
 

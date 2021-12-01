@@ -18,8 +18,12 @@ library(reshape2)
 library(ggpubr)
 library(gridExtra)
 library(grid)
-library(ggplot2)
 library(lattice)
+library(immunarch)
+library(circlize)
+library(stringr)
+library(maditr)
+library(RColorBrewer)
 
 
 # TCR BCR analysis --------------------------------------------------------
@@ -64,7 +68,7 @@ names(my.col) <- unique(dummy$Chain)
 dummy$Sample <- paste("Good", dummy$Sample, sep = "-")
 
 my_theme <-   theme(
-  , axis.title.x=element_text(size=20)
+  axis.title.x=element_text(size=20)
   , axis.title.y=element_text(size=20)
   , axis.text.y=element_text(size=16)
   , axis.text.x=element_text(size=16)
@@ -75,7 +79,7 @@ my_theme <-   theme(
 )
 
 
-ggplot(dummy)+geom_bar(aes(x=Sample, fill=Chain), position="fill")+scale_fill_manual(values = my.col)+theme_bw()+coord_flip()+
+Figure.S6A <- ggplot(dummy)+geom_bar(aes(x=Sample, fill=Chain), position="fill")+scale_fill_manual(values = my.col)+theme_bw()+coord_flip()+
   ylab("Frequency")+xlab("")+my_theme
 
 dummy2 <- as.data.frame(table(dummy$Sample, dummy$Chain)/rowSums(table(dummy$Sample, dummy$Chain)))
@@ -85,20 +89,20 @@ dummy2 <- dummy2[dummy2$Var2%in%c("IGK", "IGH", "IGL"), ]
 dummy2$Chain <- dummy2$Var2
 
 my_theme <-   theme(
-  , axis.title.x=element_text(size=20)
+  axis.title.x=element_text(size=20)
   , axis.title.y=element_text(size=20)
   , axis.text.y=element_text(size=16)
   , axis.text.x=element_text(size=16)
   , legend.text=element_text(size=16)
   , plot.title=element_text(size=20, face = "bold")
   , plot.subtitle=element_text(size=0, face = "plain")
-  , legend.title=element_text(size=16, face = "bold"), 
+  , legend.title=element_text(size=16, face = "bold") 
   , legend.position = "none", 
 )
 
 
 my_comparisons <- list( c("IGK", "IGH"), c("IGH", "IGL"), c("IGK", "IGL") )
-ggviolin(dummy2, x = "Chain", y = "Freq",
+Figure.S6B <- ggviolin(dummy2, x = "Chain", y = "Freq",
          color = "Chain", palette = "jco", add = c("boxplot", "jitter"), caption= "Kruskal-Wallis, p = 4.302e-05", font.caption=14)+ 
   stat_compare_means(comparisons = my_comparisons, size=4.5)+ # Add pairwise comparisons p-value
   ylab("Frequency")+my_theme
@@ -113,7 +117,6 @@ dummy$Response <- df_mixcr$Response[match(dummy$Sample, df_mixcr$Sample)]
 colnames(dummy) <- c("Sample", "cloneCount", "Response")
 
 
-library(immunarch)
 
 imk.immdata <- list()
 imk.immdata[['data']] <- list()
@@ -196,7 +199,7 @@ rownames(imk.immdata$meta) <- imk.immdata$meta$Sample
 rownames(imm_top) <- paste(imk.immdata$meta[rownames(imm_top), "Response"], rownames(imm_top), sep = "-")
 
 
-vis(imm_top)+xlab("")+theme(
+Figure.5B <- vis(imm_top)+xlab("")+theme(
   axis.title.x=element_text(size=20)
   , axis.title.y=element_text(size=20)
   , axis.text.y=element_text(size=16)
@@ -219,7 +222,7 @@ my_theme <-   theme(
   , legend.title=element_text(size=16, face = "bold"), 
 )
 
-vis(exp_vol, .by = c("Response"), .meta = imk.immdata$meta) + 
+Figure.5A <- vis(exp_vol, .by = c("Response"), .meta = imk.immdata$meta) + 
   scale_colour_manual(values =c(Good="#EFC000FF", Bad="#0073C2FF"), aesthetics = c("colour", "fill"))+xlab("")+my_theme+
   vis(exp_vol.bcr, .by = c("Response"), .meta = imk.immdata.bcr$meta) + 
   ggtitle("Number of BCR clonotypes", subtitle = "") + scale_colour_manual(values =c(Good="#EFC000FF", Bad="#0073C2FF"), aesthetics = c("colour", "fill"))+xlab("")+my_theme+
@@ -328,7 +331,6 @@ dummy <- aggregate(df_mixcr$cloneCount, by=list(Sample=df_mixcr$Sample, bestDFam
 dummy <- dummy[dummy$x>5, ]
 dummy <- dummy[dummy$bestDFamily!="", ]
 
-library(circlize)
 
 grid.col <- union(dummy$Sample, dummy$bestDFamily)
 names(grid.col) <- grid.col
@@ -359,7 +361,6 @@ dummy <- aggregate(df_mixcr$cloneCount, by=list(Sample=df_mixcr$Sample, bestJFam
 dummy <- dummy[dummy$x>10, ]
 dummy <- dummy[dummy$Sample%in%names(table(dummy$Sample))[table(dummy$Sample)>1], ]
 
-library(circlize)
 
 grid.col <- union(dummy$Sample, dummy$bestJFamily)
 names(grid.col) <- grid.col
@@ -390,8 +391,6 @@ dummy <- dummy[dummy$x>10, ]
 dummy <- dummy[dummy$Sample%in%names(table(dummy$Sample))[table(dummy$Sample)>1], ]
 dummy <- dummy[dummy$bestCFamily!="", ]
 
-library(circlize)
-
 grid.col <- union(dummy$Sample, dummy$bestCFamily)
 names(grid.col) <- grid.col
 
@@ -415,7 +414,6 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
 
 # HLA ---------------------------------------------------------------------
 
-library(stringr)
 
 
 ## RPKM
@@ -518,7 +516,6 @@ df.confidence <- df.confidence[df.confidence$Sample%in%rownames(samples_data), ]
 df.confidence$Response <- samples_data$Response[match(df.confidence$Sample, rownames(samples_data))]
 
 
-library(maditr)
 df.rpkm.2 <- dcast(df.rpkm[, c(1, 2, 3)], Sample ~ Allele, value.var = "RPKM")
 df.rpkm.2 <- as.data.frame(df.rpkm.2)
 rownames(df.rpkm.2) <- df.rpkm.2$Sample
@@ -534,7 +531,6 @@ df.rpkm$RPKM <- as.numeric(df.rpkm$RPKM)
 
 wilcox.test(RPKM ~ Response, df.rpkm)
 
-library(ggpubr)
 my_comparisons <- list( c("Bad", "Good") )
 
 a <- ggboxplot(df.rpkm, x = "Response", y = "RPKM",
@@ -560,7 +556,7 @@ b <- ggboxplot(df.rpkm, x = "Response", y = "RPKM", facet.by = "Class",
   stat_compare_means(comparisons = my_comparisons, label.y = 100)+my_theme+xlab("") #
 
 
-ggarrange(a, b, common.legend = T)
+Figure.5C <- ggarrange(a, b, common.legend = T)
 
 
 my.col <- unique(df.rpkm[, c("Sample", "Response")])
@@ -576,7 +572,6 @@ rownames(my.col) <- paste(my.col$Response, my.col$Sample, sep = "-")
 
 dummy <- dummy[!dummy$Allele%in%c("J", "K", "P", "V"), ]
 
-library(circlize)
 
 group <- rep(NA, length(unique(c(dummy$Sample, dummy$Allele))))
 names(group) <- unique(c(dummy$Sample, dummy$Allele))
@@ -615,7 +610,6 @@ circos.trackPlotRegion(track.index = 1, panel.fun = function(x, y) {
 
 # Merging HLA, BCR, TCR ----------------------------------------------------------------
 
-library(RColorBrewer)
 
 hla <- c(brewer.pal(n = 12, name = "Set3"), brewer.pal(n = 2, name = "Set2"))
 
@@ -666,6 +660,6 @@ p6 <- ggplot(data=net_mixcr[net_mixcr$Sample%in%c("IMK35", "IMK37", "IMK39") & n
 
 
 
-grid.arrange(p2, p3, p4, nrow = 3)
-grid.arrange(p1, p5, p6, nrow = 3)
+Figure.5D1 <- grid.arrange(p2, p3, p4, nrow = 3)
+Figure.5D1 <- grid.arrange(p1, p5, p6, nrow = 3)
 

@@ -13,6 +13,7 @@
 library(caret)
 library(ranger)
 library(glmnet)
+library(parallel)
 
 lasso_grid <- expand.grid(
   alpha = 1,
@@ -31,9 +32,6 @@ myControl <- trainControl(
 )
 
 
-
-library(caret)
-library(parallel)
 
 lasso_grid <- expand.grid(
   alpha = 1,

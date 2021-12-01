@@ -21,12 +21,12 @@ library(dplyr)
 library(tidyr)
 library(MCPcounter)
 library(RColorBrewer)
+library(ggpubr)
 
 samples_data <- read.delim("../data/clinical.txt")
 rownames(samples_data) <- paste0(samples_data$Response, ".", rownames(samples_data))
 
-TPM <- read.table("../data/TPM_IMK_gene.txt", sep = "\t", stringsAsFactors = F, header = T)
-TPM <- TPM[!duplicated(TPM$SYMBOL), ]
+TPM <- read.table("../data/TPM_MCPcounter-gene.txt", sep = "\t", stringsAsFactors = F, header = T)
 rownames(TPM) <- TPM$SYMBOL
 TPM$SYMBOL <- NULL
 IMK_ids <- rownames(samples_data)[samples_data$Diagnosis%in%"cutaneous"]
@@ -50,7 +50,7 @@ mcp.counter$Response <- gsub(".IMK[[:digit:]][[:digit:]]", "", mcp.counter$Sampl
 mcp.counter$Sample <- gsub("[.]", "-", mcp.counter$Sample)
 mcp.counter <- mcp.counter[order(mcp.counter$Response, decreasing = F), ]
 mcp.counter$Sample <- factor(mcp.counter$Sample, levels = unique(mcp.counter$Sample))
-ggplot(data = mcp.counter) + theme_bw() +
+Figure.3C <- ggplot(data = mcp.counter) + theme_bw() +
   geom_bar(stat="identity", width = 0.9, aes(y=Score, x=Sample, fill=CellType)) + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1, size=16)
         , axis.title.x=element_text(size=20)
@@ -86,7 +86,6 @@ cibersort <- cibersort[cibersort[, 1]%in%c(cut.idt), ]
 
 cibersort <- cibersort[!cibersort[,2]%in%c("P.value", "Correlation", "RMSE", "Absolute.score..sig.score."), ]
 
-library(ggpubr)
 my.list <- list()
 
 my_comparisons <- list( c("Bad", "Good") )
@@ -108,7 +107,7 @@ length(unique(cibersort$variable))
 col <- c(brewer.pal(n = 8, name = "Set1"), brewer.pal(n = 8, name = "Set3"))
 names(col) <- unique(cibersort$variable)
 
-ggplot(data = cibersort, aes(y=value, x=Mixture, fill=variable)) +
+Figure.3D <- ggplot(data = cibersort, aes(y=value, x=Mixture, fill=variable)) +
   geom_bar(stat="identity") + theme_bw()+ theme(axis.text.x = element_text(angle = 90, hjust = 1, size=16)
                                                 , axis.title.x=element_text(size=20)
                                                 , axis.title.y=element_text(size=20)
@@ -132,6 +131,9 @@ for(i in unique(cibersort[, 2])){
     p.res_cibersort[[i]] <- wilcox.test(value~Response, cibersort[cibersort[,2]==i, ])$p.value
   }
 }
+
+Table.S7.2 <- data.frame(Celltype=names(p.res_mcpcounter), Wilcoxon.test = unlist(names(p.res_mcpcounter))) 
+Table.S7.3 <- data.frame(Celltype=names(p.res_cibersort), Wilcoxon.test = unlist(names(p.res_cibersort))) 
 
 # Comparasion MCP-counter - CIBERSORTx -------------------------------------------------------------
 
@@ -219,7 +221,6 @@ for(var in unique(multiespectral$variable)){
 res.test[unlist(res.test)<0.06]
 
 dummy <- multiespectral[multiespectral$variable%in%c("CD19.dens", "dens_CD8_Melanoma") & !is.na(multiespectral$value), ]
-library(ggpubr)
 my_comparisons <- list( c("Bad", "Good") )
 
 dummy$variable <- factor(as.character(dummy$variable))
@@ -237,7 +238,7 @@ my_theme <-   theme(
   , legend.title=element_text(size=16, face = "bold"), 
 )
 
-ggboxplot(dummy, x = "Response", y = "value", fill = "Response", facet.by = "variable", palette = "jco", outlier.shape=NA)+
+Figure.4C <- ggboxplot(dummy, x = "Response", y = "value", fill = "Response", facet.by = "variable", palette = "jco", outlier.shape=NA)+
   stat_compare_means(comparisons = my_comparisons, label = "p.format", label.y = 400, size = 5)+xlab("")+ylab(expression("Cells"/ mm^2))+my_theme
 
 
@@ -270,6 +271,23 @@ p.res <- p.res[, colSums(is.na(p.res))==0]
 corrplot::corrplot(res, p.mat = p.res)
 
 
-
+Table.S9 <- data.frame(
+  Immunoflourescence = c("Plasma.cell.like.dens", "CD19.dens", "CD19.dens", "CD19.dens", "CD20.dens"), 
+  Deconvolution = c("Plasma cells", "Naive B cells IGL high", "Naive B cells IGK high", "Plasma cells", "Naive B cells"), 
+  Spearman.correlation = c(
+    res["Plasma.cell.like.freq", "Plasma cells"], 
+    res["CD19.event", "Naive B cells IGL high"], 
+    res["CD19.dens", "Naive B cells IGL high"], 
+    res["CD19.event", "Plasma cells"],
+    res["dens_CD20_Melanoma", "Naive B cells"]
+  ), 
+  P.value = c(
+    p.res["Plasma.cell.like.freq", "Plasma cells"], 
+    p.res["CD19.event", "Naive B cells IGL high"], 
+    p.res["CD19.dens", "Naive B cells IGL high"], 
+    p.res["CD19.event", "Plasma cells"],
+    p.res["dens_CD20_Melanoma", "Naive B cells"]
+  )
+)
 
 

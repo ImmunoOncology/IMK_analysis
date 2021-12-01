@@ -15,6 +15,10 @@ library("pheatmap")
 library(gdata)
 library(ggplot2)
 library(dplyr)
+library('biomaRt')
+library(ComplexHeatmap)
+library(circlize)
+library(ggrepel)
 
 cts <- read.delim("../data/raw_counts.txt")
 rownames(cts) <- cts$ENSEMBL
@@ -49,9 +53,7 @@ res <- res[order(res$padj), ]
 resdata <- merge(as.data.frame(res), as.data.frame(counts(dds, normalized=TRUE)), by="row.names", sort=FALSE)
 resdata <- resdata %>% filter(baseMean>10) %>% filter(abs(log2FoldChange)>1.5) %>% filter(padj<0.05)
 
-
 ## Add gene names 
-library('biomaRt')
 ensembl  <- useMart(host="www.ensembl.org", "ENSEMBL_MART_ENSEMBL",  dataset="hsapiens_gene_ensembl")
 genes <- as.character((resdata$Row.names))
 
@@ -77,7 +79,6 @@ colnames(norm.counts) <- resf[colnames(norm.counts), "SYMBOL"]
 norm.counts$response <- NULL
 norm.counts[rownames(sampleTable), "response"] <- sampleTable$condition
 
-library(ggrepel)
 
 resf$SYMBOL[resf$SYMBOL==""] <- c("AC051619.7", "AC025280.1")
 
@@ -116,7 +117,7 @@ tab$genelabels[tab$genelabels=="ALDH1A2"] <- paste0("italic(", tab$genelabels[ta
 
 cols <- c("Upregulated" = "red", "Downregulated" = "steelblue", "Nonsignificant" = "gray48")
 vol <- ggplot(tab, aes(x = logFC, y = negLogPval, labels=gene))
-vol +   
+Figure.1A <- vol +   
   scale_colour_manual(values = cols) +
   geom_point(size = 1, alpha = 1, na.rm = T, fill = tab$color, color = tab$color) +
   theme_bw(base_size = 14) + 
@@ -136,10 +137,6 @@ vol +
 
 
 # Figure 1B ---------------------------------------------------------------
-
-library(ComplexHeatmap)
-library(dplyr)
-library(circlize)
 
 # get the top genes
 sigGenes <- resf[which(resf$padj<padj & abs(resf$log2FoldChange)>lFC  & resf$baseMean>baseMean), "ENSEMBL"]
@@ -171,7 +168,7 @@ rownames(z.mat) <- sigGenes_SYMBOL
 
 ht_opt("COLUMN_ANNO_PADDING" = unit(6, units = "mm"))
 
-Heatmap(z.mat, name = "Color Key",
+Figure.1B <- Heatmap(z.mat, name = "Color Key",
         col = myRamp,
         show_row_name = T,
         cluster_columns = T, show_column_dend = F, 
@@ -179,3 +176,6 @@ Heatmap(z.mat, name = "Color Key",
         split=group, row_title_gp = gpar(fontsize = 26),
         top_annotation = ha1, 
         row_names_gp = gpar(fontsize = 22,  fontface = "italic"), heatmap_legend_param = list(labels_gp = gpar(fontsize = 26), title_gp=gpar(fontsize = 26, fontface = "bold")))
+
+
+Table.S3 <- res.dummy[, c("SYMBOL", "log2FoldChange", "padj")]

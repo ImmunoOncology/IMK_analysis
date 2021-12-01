@@ -9,9 +9,12 @@
 ##
 ###################################################
 
+library(ggplot2)
+library(dplyr)
+library(mutSigExtractor)
+library(RColorBrewer)
 
 # TMB ---------------------------------------------------------------------
-
 
 clinical <- read.delim("../data/clinical.txt")
 rownames(clinical) <- paste(clinical$Response, "-", rownames(clinical), sep = "")
@@ -21,7 +24,6 @@ tmb$ID <- paste(tmb$Type, "-IMK", gsub("Sample ", "", tmb$Sample), sep = "")
 
 tmb <- tmb[tmb$ID%in%rownames(clinical)[clinical$Diagnosis%in%"cutaneous"], ]
 
-library(ggplot2)
 
 round(mean(tmb$TMB[tmb$Type=="Good"]), 2)
 round(sd(tmb$TMB[tmb$Type=="Good"]), 2)
@@ -30,7 +32,7 @@ round(mean(tmb$TMB[tmb$Type=="Bad"]), 2)
 round(sd(tmb$TMB[tmb$Type=="Bad"]), 2)
 
 
-ggplot(data=tmb)+geom_bar(aes(x=ID, y=TMB, fill=Type), stat = "identity")+theme_bw()+
+Figure.S2A <- ggplot(data=tmb)+geom_bar(aes(x=ID, y=TMB, fill=Type), stat = "identity")+theme_bw()+
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size=16), legend.position = "none"
         , axis.title.x=element_text(size=20)
         , axis.title.y=element_text(size=20)
@@ -42,7 +44,6 @@ ggplot(data=tmb)+geom_bar(aes(x=ID, y=TMB, fill=Type), stat = "identity")+theme_
 
 # MutationalSignatures ---------------------------------------------------------------------
 
-library(mutSigExtractor)
 
 
 DBS <- read.delim("../data/MutationalSignatures.DBS78.txt")
@@ -76,9 +77,6 @@ DBS.res.norm$ID <- rownames(DBS.res.norm)
 DBS.res.norm <- reshape2::melt(DBS.res.norm)
 DBS.res.norm$ID <- unlist(lapply(lapply(strsplit(DBS.res.norm$ID, "_"), rev), paste, collapse = "_", sep = ""))
 
-library(ggplot2)
-library(RColorBrewer)
-
 cols <- brewer.pal(n = 11, name = "Set3")
 names(cols) <- levels(DBS.res.norm$variable)
 
@@ -89,7 +87,7 @@ DBS.res.norm$ID <- gsub("[_]", "-", DBS.res.norm$ID)
 
 DBS.res.norm$DBS <- DBS.res.norm$variable
 
-ggplot(DBS.res.norm, aes(x=ID, y=value, fill=DBS)) + geom_bar(stat = "identity")+ 
+Figure.S2B <- ggplot(DBS.res.norm, aes(x=ID, y=value, fill=DBS)) + geom_bar(stat = "identity")+ 
   scale_fill_manual(values=cols)+
   ggplot2::coord_flip()+xlab("")+ylab("")+theme_bw()+theme(
     axis.title.x=element_text(size=20)

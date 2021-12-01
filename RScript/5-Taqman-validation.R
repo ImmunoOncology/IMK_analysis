@@ -9,6 +9,9 @@
 ##
 ###################################################
 
+library(dplyr)
+library(ggplot2)
+
 taqman <- read.delim("../data/taqman.txt", dec = ",")
 tpm <- read.delim("../data/TPM_IMK_gene.txt")
 
@@ -30,6 +33,8 @@ tpm$SYMBOL <- NULL
 
 taqman$tpm <- NA
 
+taqman <- taqman[taqman$gene!="CDR1", ]
+
 res <- list()
 res[["corr"]] <- list()
 res[["corr.pvalue"]] <- list()
@@ -50,9 +55,9 @@ for(i in unique(taqman$gene)){
 res$corr
 res$corr.pvalue
 
-cor(taqman[taqman$gene!="CDR1", "tpm"], taqman[taqman$gene!="CDR1", "deltaCt"])
-cor.test(taqman[taqman$gene!="CDR1", "tpm"], taqman[taqman$gene!="CDR1", "deltaCt"])
 
+res$corr[["Overall"]] <- cor(taqman[taqman$gene!="CDR1", "tpm"], taqman[taqman$gene!="CDR1", "deltaCt"])
+res$corr.pvalue[["Overall"]] <- cor.test(taqman[taqman$gene!="CDR1", "tpm"], taqman[taqman$gene!="CDR1", "deltaCt"])$p.value
 
 taqman$Gene <- taqman$gene
 
@@ -68,11 +73,13 @@ my_theme <-   theme(
 )
 
 
-ggplot(data=taqman[taqman$Gene!="CDR1", ], aes(x=tpm, y=deltaCt,))+geom_point(aes( col=Gene), size=3)+ 
+Figure.S1 <- ggplot(data=taqman[taqman$Gene!="CDR1", ], aes(x=tpm, y=deltaCt,))+geom_point(aes( col=Gene), size=3)+ 
   geom_smooth(method='lm', alpha=0.2)+
   theme_bw()+
   xlab(expression(log[2]("TPM")))+ylab(expression(paste(Delta, "Ct", sep = "")))+my_theme
 
 
 
+
+Table.S5 <- data.frame(Gene=names(res$corr), Pearson.correlation=unlist(res$corr), P.value = unlist(res$corr.pvalue))
 

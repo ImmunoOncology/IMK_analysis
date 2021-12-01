@@ -46,10 +46,13 @@ for(i in c("BP", "CC", "MF")){
                                    , down.raw = ego.down.raw)
 }
 
+result_go$BP$up@result$GO_type <- "BP"
+result_go$CC$up@result$GO_type <- "CC"
+result_go$MF$up@result$GO_type <- "MF"
 
 go_up <- rbind(result_go$BP$up@result, result_go$CC$up@result, result_go$MF$up@result)
 go_down <- rbind(result_go$BP$down@result, result_go$CC$down@result, result_go$MF$down@result)
 
-
+Table.S4 <- go_up[, c("Description", "Count", "p.adjust", "GO_type")]
 
 
