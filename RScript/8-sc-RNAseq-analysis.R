@@ -130,7 +130,7 @@ ElbowPlot(sade)
 
 sade <- FindNeighbors(object = sade, dims=1:20, reduction = "pca", force.recalc = F)
 sade <- FindClusters(object = sade, resolution = 0.8, print.output = 0, random.seed = 123)
-sade <- RunUMAP(sade, dims = 1:20)
+sade <- RunUMAP(sade, dims = 1:23)
 DimPlot(sade, reduction = "umap")
 
 # Manually check annotation and compare with PanglaoDB 
